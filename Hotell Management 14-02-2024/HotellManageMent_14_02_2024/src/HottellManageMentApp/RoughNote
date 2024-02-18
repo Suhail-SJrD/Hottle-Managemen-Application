@@ -1,0 +1,313 @@
+package HottellManageMentApp;
+
+//import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.Date;
+
+public class Rooms 
+{
+	/*
+	(
+		String customerName,
+		String customerStayingReson, 
+		int customerAge, 
+		String customerNative,
+		String customerCommingFrom, 
+		String distric
+	)	
+	 */
+
+	Date dt = new Date();
+	Scanner sc = new Scanner(System.in);
+	void GetCustomerDetailsToAllocatRoom_s(HashMap map, ArrayList ar,ArrayList Sales) 
+	{
+		
+		CustomerDetails objectOfCustomerDetailsClass = new CustomerDetails();
+		Double RoomRentPerDay = 1000.00;
+
+		System.out.println("Enter your Name");
+		String CustomerName = sc.next();
+		System.out.println("StayingRsone");
+		String CustomerStayingReson = sc.next();
+		System.out.println("Your Age");
+		int CustomerAge = sc.nextInt();
+		System.out.println("your District");
+		String Distric = sc.next();
+		System.out.println("Native");
+		String CustomerNative = sc.next();
+		System.out.println("Your Comming From");
+		String CustomerCommingFrom = sc.next();
+		
+
+		objectOfCustomerDetailsClass.setDistric(Distric);
+		objectOfCustomerDetailsClass.setCustomerName(CustomerName);
+		objectOfCustomerDetailsClass.setCustomerStayingReson(CustomerStayingReson);
+		objectOfCustomerDetailsClass.setCustomerAge(CustomerAge);
+		objectOfCustomerDetailsClass.setCustomerNative(CustomerNative);
+		objectOfCustomerDetailsClass.setCustomerCommingFrom(CustomerCommingFrom);
+		objectOfCustomerDetailsClass.setChecking_Date(dt);
+
+		
+		
+		
+		
+		System.out.println("Eneter the room Number");
+		int RoomNo = sc.nextInt();
+		boolean flag = CheckingTheRoomValidation(ar,RoomNo);
+		boolean WhileLoopFlag = true;
+		if(!(map.containsKey(RoomNo))) {
+			while(WhileLoopFlag) {
+				
+				if(flag) {
+					map.put(RoomNo,objectOfCustomerDetailsClass);
+					System.out.println("How many Days ");
+					int StayingDays = sc.nextInt();
+					if(StayingDays > 0) {
+						Sales.add(RoomRentPerDay*StayingDays);
+					}
+					WhileLoopFlag = false;
+				}
+				else {
+					System.err.println("Invalid Room No:-");
+					System.err.println("You want to Continue with this Funcnality yes or Not");
+					String CheckingWillingNess = sc.next();
+					if(CheckingWillingNess == "yes") {
+						System.out.println("Eneter the room Number");
+						RoomNo = sc.nextInt();
+						flag = CheckingTheRoomValidation(ar,RoomNo);
+					}
+					else {
+						return;
+					}
+				}
+			}
+		}
+		else {
+			System.out.println("Alrady This Room is Occupied try other's");
+		}
+	}
+	
+	boolean CheckingTheRoomValidation(ArrayList ar,int RoomNo) {
+		ListIterator itr = ar.listIterator();
+		while(itr.hasNext()) {
+			if(RoomNo == (int)itr.next()) {
+				return true;
+			}
+		}
+		return false;
+	}
+		
+	void GetAllotedRoomsCustomerDetails(HashMap map) {
+		System.out.println("Eneter the Room Number to Check the Customer Details");
+		Integer CheckingRoomNumber = sc.nextInt();
+		if(map.containsKey(CheckingRoomNumber)) {
+			CustomerDetails cs2 = (CustomerDetails) map.get(CheckingRoomNumber);
+			System.out.println("Name : "+cs2.getCustomerName());
+			System.out.println("Staying Resone : "+cs2.getCustomerStayingReson());
+			System.out.println("Age : "+cs2.getCustomerAge());
+			System.out.println("Distric : "+cs2.getDistric());
+			System.out.println("Comming From : "+cs2.getCustomerCommingFrom());
+			System.out.println("Native Place : "+cs2.getCustomerNative());
+			System.out.println("Check In Date : " + cs2.getChecking_Date());
+			System.out.println("Check Out Date : " + cs2.getCheckOut_Date());
+		}
+		else {
+			System.err.println("Invalid Room Number");
+			System.out.println("Try again");
+		}
+	}
+	
+	
+	void BookedRooms(HashMap map)
+	{
+		
+		Set st = map.keySet();
+		Iterator itr = st.iterator();
+		if(itr.hasNext()) {
+			System.out.println("Booked Rooms Are : ");
+			while(itr.hasNext()) {
+				System.out.print(itr.next() + " ");
+			}
+		}
+		else {
+			System.out.println("No Romm is Booked count = " + 0 );
+		}
+		
+		
+	}
+	
+	void CustomerCheckOut(HashMap map) {
+		System.out.println("Enter the Room Number To Check Out:-> ");
+		int RoomNumberToCheckOut = sc.nextInt();
+		CustomerDetails StoringCustomerCheckingOutDetails = null;
+		String Name = "";
+		String StayingReson= "";
+		int Age = 0;
+		String NativePlace = "";
+		String Comming_From = "";
+		String Distric = "";
+		Date CheckOut = null;
+		
+		
+		try {
+			StoringCustomerCheckingOutDetails = (CustomerDetails) map.remove(RoomNumberToCheckOut);
+			Name = StoringCustomerCheckingOutDetails.getCustomerName();
+			StayingReson = StoringCustomerCheckingOutDetails.getCustomerStayingReson();
+			Age = StoringCustomerCheckingOutDetails.getCustomerAge();
+			NativePlace = StoringCustomerCheckingOutDetails.getCustomerNative();
+			Comming_From = StoringCustomerCheckingOutDetails.getCustomerCommingFrom();
+			Distric = StoringCustomerCheckingOutDetails.getDistric();
+			StoringCustomerCheckingOutDetails.setCheckOut_Date(dt);
+			CheckOut = StoringCustomerCheckingOutDetails.getCheckOut_Date();
+			
+		}
+		catch(NullPointerException ExceptionCatcingObject) {
+			System.out.println("Enter the Valid Room Number:->");
+			System.err.println("Invalid Room No:-");
+			System.err.println("You want to Continue with this Funcnality yes or Not");
+			String CheckingWillingNess = sc.next();
+			if(CheckingWillingNess == "yes") {
+				CustomerCheckOut(map);
+				return;
+			}
+			else {
+				return;
+			}
+		}
+		System.out.println("Name : " + Name);
+		System.out.println("Staying Resone : " + StayingReson);
+		System.out.println("Age : " + Age);
+		System.out.println("Native Place : " + NativePlace);
+		System.out.println("Comming From : " + Comming_From);
+		System.out.println("Distric : " + Distric);
+		System.out.println("Check Out : " + CheckOut);
+		
+		
+	}
+	
+	void AvailableRooms(HashMap map,ArrayList ar)
+	{
+		ListIterator itr = ar.listIterator();
+		Set Key_sStoring = map.keySet();
+		Iterator MapItr = Key_sStoring.iterator();
+		if(MapItr.hasNext()) {
+			System.out.println("\nAvailable Rooms Are : ");
+			while(itr.hasNext()) {
+				Object TempStorageOfTheNextElement = itr.next();
+				if(!(map.containsKey(TempStorageOfTheNextElement))) {
+					System.out.print(TempStorageOfTheNextElement + " ");
+				}
+			}
+			System.out.println();
+		}
+		else
+		{
+			System.out.println("Availablle Rooms Are :-> ");
+			while(itr.hasNext()) {
+				System.out.print(itr.next() + " : ");
+			}
+			System.out.println();
+		}
+		
+		
+	}
+	
+	void TotalSalesForADay(ArrayList Sales) {
+		
+		ListIterator itr = Sales.listIterator();
+		
+		double TotalSaleForTheDay = 0.0;
+		while(itr.hasNext())
+		{
+			TotalSaleForTheDay = TotalSaleForTheDay + (double)itr.next();
+		}
+		
+		System.out.println("Total Sales for this Day is : "+TotalSaleForTheDay);
+	}
+	
+	
+	void TotalRoomsInAHotell(ArrayList ar) {
+		for(int i = 101; i<= 105; i++) {
+			ar.add(i);
+		}
+	}
+	
+	void CloseTheAplication() {
+		System.out.println("-------Sayyid Group Stay's-------");
+		System.out.println("Have a Safe Journy");
+		System.out.println("Come again");
+		System.out.println("Application is Closed at : " + dt );
+		System.exit(0);
+	}
+	
+	public static void main(String[] args) 
+	{
+		
+		Scanner scanner = new Scanner(System.in);
+		HashMap map = new HashMap();
+		ArrayList ar = new ArrayList();
+		ArrayList Sales = new ArrayList();
+		CustomerDetails cs = new CustomerDetails();
+		Rooms rs = new Rooms();
+		rs.TotalRoomsInAHotell(ar);
+		
+		
+		
+		while(true) {
+			
+			System.out.println("-------Welcome to Sayyid Group Stay's-------");
+			System.out.println("Hear Available Primum Service's Are:->");
+			System.out.println("1.Available Rooms");
+			System.out.println("2.Booked Rooms");
+			System.out.println("3.Booke a Room");
+			System.out.println("4.Check the Room Details");
+			System.out.println("5.Checking Out the Room");
+			System.out.println("6.Total Sales For This Day");
+			System.out.println("7.Close the Applecation");
+			System.out.println("How May Help you!!!");
+			
+			System.out.println("\nSelect the Give Service Which is Sutable to you!!!");
+			
+			int Options = scanner.nextInt();
+			
+			switch(Options) 
+			{
+			
+			case 1: rs.AvailableRooms(map, ar); break;
+			case 2: rs.BookedRooms(map); break;
+			case 3: rs.GetCustomerDetailsToAllocatRoom_s(map,ar,Sales); break;
+			case 4: rs.GetAllotedRoomsCustomerDetails(map); break;
+			case 5: rs.CustomerCheckOut(map); break;
+			case 6: rs.TotalSalesForADay(Sales);break;
+			case 7: rs.CloseTheAplication(); break;
+			default:
+				System.err.println("Invalid Option Check Once and Try again");
+				break;
+			}
+			
+			System.out.println("\n\n\n\n");
+		}
+		
+
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
